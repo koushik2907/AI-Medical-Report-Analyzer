@@ -1,10 +1,20 @@
 import pytesseract
 from PIL import Image
+import streamlit as st
+
 
 def image_to_text(uploaded_file):
 
-    img = Image.open(uploaded_file)
+    try:
 
-    text = pytesseract.image_to_string(img)
+        img = Image.open(uploaded_file)
 
-    return text
+        text = pytesseract.image_to_string(img)
+
+        return text
+
+    except:
+
+        st.error("OCR engine not available on cloud deployment. Please upload PDF, TXT, or CSV reports.")
+
+        return ""

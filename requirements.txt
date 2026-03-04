@@ -1,0 +1,7 @@
+streamlit
+pandas
+pytesseract
+pillow
+pymupdf
+google-generativeai
+python-dotenv

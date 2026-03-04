@@ -3,3 +3,4 @@ pandas
 pytesseract
 pillow
 pymupdf
+matplotlib

@@ -1,9 +1,3 @@
-Here is a **professional `README.md`** you can place in your GitHub repository. It is written in a way that looks **good for professors, reviewers, and recruiters**.
-
-You can **copy-paste this directly into `README.md`**.
-
----
-
 # 🧬 AI Medical Report Analyzer
 
 An intelligent web application that analyzes medical reports and provides automated health insights.

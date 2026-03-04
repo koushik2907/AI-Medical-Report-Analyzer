@@ -3,7 +3,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from parser import parse_file
-from ocr import image_to_text
 from extractor import extract_values
 from analyzer import analyze
 from chatbot import explain
@@ -29,7 +28,7 @@ Upload your **medical report** and this system will:
 ✔ Generate medical explanations  
 ✔ Display health dashboard  
 ✔ Predict health risks  
-✔ Allow health chatbot queries  
+✔ Allow chatbot queries  
 """)
 
 st.divider()
@@ -41,8 +40,10 @@ st.divider()
 
 uploaded_file = st.file_uploader(
     "Upload Medical Report",
-    type=["pdf", "png", "jpg", "jpeg", "txt", "csv"]
+    type=["pdf", "txt", "csv"]  # Images removed
 )
+
+st.caption("Supported formats: PDF, TXT, CSV")
 
 
 # ---------------------------------------------------
@@ -53,10 +54,7 @@ if uploaded_file:
 
     st.success("Report uploaded successfully")
 
-    if uploaded_file.name.endswith(("png","jpg","jpeg")):
-        text = image_to_text(uploaded_file)
-    else:
-        text = parse_file(uploaded_file)
+    text = parse_file(uploaded_file)
 
     col1, col2 = st.columns(2)
 
@@ -150,7 +148,7 @@ if uploaded_file:
 
 
 # ---------------------------------------------------
-# Smart Medical Chatbot
+# Chatbot
 # ---------------------------------------------------
 
     st.divider()
@@ -165,46 +163,22 @@ if uploaded_file:
         response = "Please consult a healthcare professional for personalized advice."
 
         if "cholesterol" in question:
-            response = "High cholesterol may be caused by fatty foods, lack of exercise, smoking, obesity, or genetics. Eating fiber-rich foods and exercising regularly can help."
-
-        elif "ldl" in question:
-            response = "LDL is known as bad cholesterol. High LDL levels can lead to plaque buildup in arteries and increase heart disease risk."
-
-        elif "hdl" in question:
-            response = "HDL is good cholesterol. Higher HDL levels help remove bad cholesterol from the bloodstream."
-
-        elif "triglyceride" in question:
-            response = "High triglycerides are often linked to obesity, diabetes, and high sugar diets. Exercise and healthy eating can help lower them."
+            response = "High cholesterol may be caused by fatty foods, lack of exercise, smoking, obesity, or genetics."
 
         elif "vitamin d" in question:
-            response = "Vitamin D deficiency can occur due to lack of sunlight exposure or poor diet. Sunlight, fatty fish, fortified milk, and supplements help increase Vitamin D."
+            response = "Vitamin D deficiency may occur due to lack of sunlight. Sun exposure and fortified foods help."
 
-        elif "vitamin b12" in question or "b12" in question:
-            response = "Vitamin B12 deficiency may lead to fatigue, weakness, and nerve problems. Foods like meat, dairy, eggs, and supplements can help."
+        elif "diabetes" in question or "sugar" in question:
+            response = "High blood sugar may indicate diabetes. Diet control and exercise help manage it."
 
-        elif "anemia" in question or "hemoglobin" in question:
-            response = "Anemia occurs when hemoglobin levels are low. Iron-rich foods like spinach, lentils, red meat, and iron supplements can help."
-
-        elif "thyroid" in question or "tsh" in question:
-            response = "High TSH levels may indicate hypothyroidism. Symptoms include fatigue, weight gain, and cold sensitivity."
-
-        elif "diabetes" in question or "blood sugar" in question:
-            response = "High blood sugar levels may indicate diabetes. A balanced diet, exercise, and weight management help control blood sugar."
-
-        elif "kidney" in question or "creatinine" in question:
-            response = "High creatinine levels may indicate kidney dysfunction. Hydration and controlling blood pressure and diabetes are important."
+        elif "thyroid" in question:
+            response = "High TSH may indicate hypothyroidism causing fatigue and weight gain."
 
         elif "uric acid" in question:
-            response = "High uric acid levels may cause gout, leading to joint pain. Reducing red meat, alcohol, and sugary drinks can help."
+            response = "High uric acid may lead to gout and joint pain."
 
-        elif "liver" in question or "alt" in question:
-            response = "High ALT levels may indicate liver inflammation. Avoid alcohol, maintain healthy weight, and eat a balanced diet."
-
-        elif "platelet" in question:
-            response = "Low platelet count may increase bleeding risk. It may occur due to infections or bone marrow conditions."
-
-        elif "wbc" in question:
-            response = "High WBC count may indicate infection, inflammation, or immune response."
+        elif "kidney" in question or "creatinine" in question:
+            response = "High creatinine levels may indicate kidney function issues."
 
         st.write(response)
 

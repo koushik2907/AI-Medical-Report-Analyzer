@@ -1,8 +1,10 @@
+import streamlit as st
 import google.generativeai as genai
-import os
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+# Get API key from Streamlit secrets
+genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
+# Use correct model name
 model = genai.GenerativeModel("gemini-1.5-flash-latest")
 
 def explain(text, values, results):
@@ -10,7 +12,7 @@ def explain(text, values, results):
     prompt = f"""
 You are a medical AI assistant.
 
-Report Data:
+Medical Report:
 {text}
 
 Detected Values:
@@ -24,6 +26,8 @@ Explain clearly:
 2. Possible diseases
 3. Lifestyle suggestions
 4. When to consult a doctor
+
+Keep explanation simple.
 """
 
     response = model.generate_content(prompt)

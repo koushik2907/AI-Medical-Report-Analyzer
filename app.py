@@ -9,9 +9,9 @@ from analyzer import analyze
 from chatbot import explain
 
 
-# -------------------------------
+# ---------------------------------------------------
 # Page Settings
-# -------------------------------
+# ---------------------------------------------------
 
 st.set_page_config(
     page_title="AI Medical Report Analyzer",
@@ -22,28 +22,32 @@ st.set_page_config(
 st.title("🧬 AI Medical Report Analyzer")
 
 st.markdown("""
-Upload your **medical report** and the system will:
+Upload your **medical report** and this system will:
 
 ✔ Extract medical parameters  
-✔ Detect health conditions  
-✔ Generate explanations  
+✔ Detect possible health conditions  
+✔ Generate medical explanations  
 ✔ Display health dashboard  
 ✔ Predict health risks  
-✔ Allow medical chatbot queries  
+✔ Allow health chatbot queries  
 """)
 
 st.divider()
 
 
-# -------------------------------
-# Upload Report
-# -------------------------------
+# ---------------------------------------------------
+# Upload File
+# ---------------------------------------------------
 
 uploaded_file = st.file_uploader(
     "Upload Medical Report",
-    type=["pdf","png","jpg","jpeg","txt","csv"]
+    type=["pdf", "png", "jpg", "jpeg", "txt", "csv"]
 )
 
+
+# ---------------------------------------------------
+# If File Uploaded
+# ---------------------------------------------------
 
 if uploaded_file:
 
@@ -54,24 +58,28 @@ if uploaded_file:
     else:
         text = parse_file(uploaded_file)
 
-    col1,col2 = st.columns(2)
+    col1, col2 = st.columns(2)
 
     with col1:
         st.subheader("📄 Extracted Report Text")
-        st.text_area("Report",text,height=350)
+        st.text_area("Report Content", text, height=350)
 
     values = extract_values(text)
 
     with col2:
         st.subheader("🧪 Detected Medical Parameters")
-        st.json(values)
+
+        if values:
+            st.json(values)
+        else:
+            st.warning("No medical parameters detected")
 
     st.divider()
 
 
-# -------------------------------
+# ---------------------------------------------------
 # Health Analysis
-# -------------------------------
+# ---------------------------------------------------
 
     results = analyze(values)
 
@@ -84,87 +92,126 @@ if uploaded_file:
         st.success("No abnormal conditions detected")
 
 
-# -------------------------------
-# AI Explanation
-# -------------------------------
+# ---------------------------------------------------
+# Explanation Engine
+# ---------------------------------------------------
 
     st.subheader("📋 AI Health Explanation")
 
-    explanations = explain(values,results)
+    explanations = explain(values, results)
 
-    for e in explanations:
-        st.info(e)
+    if explanations:
+        for e in explanations:
+            st.info(e)
+    else:
+        st.success("All parameters appear within healthy range")
 
 
-# -------------------------------
+# ---------------------------------------------------
 # Medical Dashboard
-# -------------------------------
+# ---------------------------------------------------
 
-    st.divider()
-    st.subheader("📊 Medical Dashboard")
+    if values:
 
-    df = pd.DataFrame(list(values.items()),columns=["Parameter","Value"])
+        st.divider()
+        st.subheader("📊 Medical Dashboard")
 
-    fig,ax = plt.subplots()
+        df = pd.DataFrame(list(values.items()), columns=["Parameter", "Value"])
 
-    ax.bar(df["Parameter"],df["Value"])
-    ax.set_ylabel("Values")
-    ax.set_title("Medical Parameter Overview")
+        fig, ax = plt.subplots()
 
-    plt.xticks(rotation=45)
+        ax.bar(df["Parameter"], df["Value"])
 
-    st.pyplot(fig)
+        ax.set_title("Medical Parameter Overview")
+        ax.set_ylabel("Measured Value")
+
+        plt.xticks(rotation=45)
+
+        st.pyplot(fig)
 
 
-# -------------------------------
-# Risk Prediction
-# -------------------------------
+# ---------------------------------------------------
+# Health Risk Prediction
+# ---------------------------------------------------
 
     st.divider()
     st.subheader("🚨 Health Risk Prediction")
 
     risk_score = len(results)
 
-    if risk_score <= 2:
+    if risk_score == 0:
         st.success("Low Health Risk")
 
-    elif risk_score <= 5:
+    elif risk_score <= 4:
         st.warning("Moderate Health Risk")
 
     else:
         st.error("High Health Risk – Medical Consultation Recommended")
 
 
-
-# -------------------------------
-# Chatbot UI
-# -------------------------------
+# ---------------------------------------------------
+# Smart Medical Chatbot
+# ---------------------------------------------------
 
     st.divider()
     st.subheader("💬 Medical Chatbot")
 
-    user_question = st.text_input("Ask a medical question")
+    user_question = st.text_input("Ask a question about your health report")
 
     if user_question:
 
         question = user_question.lower()
 
+        response = "Please consult a healthcare professional for personalized advice."
+
         if "cholesterol" in question:
-            st.write("High cholesterol can result from unhealthy diet, lack of exercise, smoking, and genetics.")
+            response = "High cholesterol may be caused by fatty foods, lack of exercise, smoking, obesity, or genetics. Eating fiber-rich foods and exercising regularly can help."
+
+        elif "ldl" in question:
+            response = "LDL is known as bad cholesterol. High LDL levels can lead to plaque buildup in arteries and increase heart disease risk."
+
+        elif "hdl" in question:
+            response = "HDL is good cholesterol. Higher HDL levels help remove bad cholesterol from the bloodstream."
+
+        elif "triglyceride" in question:
+            response = "High triglycerides are often linked to obesity, diabetes, and high sugar diets. Exercise and healthy eating can help lower them."
 
         elif "vitamin d" in question:
-            st.write("Foods rich in Vitamin D include fatty fish, egg yolks, fortified milk, and sunlight exposure.")
+            response = "Vitamin D deficiency can occur due to lack of sunlight exposure or poor diet. Sunlight, fatty fish, fortified milk, and supplements help increase Vitamin D."
 
-        elif "diabetes" in question:
-            st.write("Diabetes occurs when blood sugar levels remain elevated. Healthy diet and exercise can help manage it.")
+        elif "vitamin b12" in question or "b12" in question:
+            response = "Vitamin B12 deficiency may lead to fatigue, weakness, and nerve problems. Foods like meat, dairy, eggs, and supplements can help."
 
-        elif "kidney" in question:
-            st.write("Kidney issues may arise from high blood pressure, diabetes, or dehydration.")
+        elif "anemia" in question or "hemoglobin" in question:
+            response = "Anemia occurs when hemoglobin levels are low. Iron-rich foods like spinach, lentils, red meat, and iron supplements can help."
 
-        else:
-            st.write("Please consult a healthcare professional for personalized medical advice.")
+        elif "thyroid" in question or "tsh" in question:
+            response = "High TSH levels may indicate hypothyroidism. Symptoms include fatigue, weight gain, and cold sensitivity."
+
+        elif "diabetes" in question or "blood sugar" in question:
+            response = "High blood sugar levels may indicate diabetes. A balanced diet, exercise, and weight management help control blood sugar."
+
+        elif "kidney" in question or "creatinine" in question:
+            response = "High creatinine levels may indicate kidney dysfunction. Hydration and controlling blood pressure and diabetes are important."
+
+        elif "uric acid" in question:
+            response = "High uric acid levels may cause gout, leading to joint pain. Reducing red meat, alcohol, and sugary drinks can help."
+
+        elif "liver" in question or "alt" in question:
+            response = "High ALT levels may indicate liver inflammation. Avoid alcohol, maintain healthy weight, and eat a balanced diet."
+
+        elif "platelet" in question:
+            response = "Low platelet count may increase bleeding risk. It may occur due to infections or bone marrow conditions."
+
+        elif "wbc" in question:
+            response = "High WBC count may indicate infection, inflammation, or immune response."
+
+        st.write(response)
 
 
+# ---------------------------------------------------
+# If No File Uploaded
+# ---------------------------------------------------
 
 else:
 

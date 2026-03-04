@@ -152,35 +152,57 @@ if uploaded_file:
 # ---------------------------------------------------
 
     st.divider()
-    st.subheader("💬 Medical Chatbot")
+st.subheader("💬 Medical Chatbot")
 
-    user_question = st.text_input("Ask a question about your health report")
+user_question = st.text_input("Ask a question about your health report")
 
-    if user_question:
+if user_question:
 
-        question = user_question.lower()
+    question = user_question.lower()
 
-        response = "Please consult a healthcare professional for personalized advice."
+    response = "Please consult a healthcare professional for personalized medical advice."
 
-        if "cholesterol" in question:
-            response = "High cholesterol may be caused by fatty foods, lack of exercise, smoking, obesity, or genetics."
+    # exercise questions
+    if "exercise" in question or "workout" in question or "gym" in question:
+        response = "Regular moderate exercise like walking, cycling, or yoga can improve heart health, control cholesterol, and regulate blood sugar."
 
-        elif "vitamin d" in question:
-            response = "Vitamin D deficiency may occur due to lack of sunlight. Sun exposure and fortified foods help."
+    # diet questions
+    elif "diet" in question or "food" in question or "eat" in question:
+        response = "A balanced diet including vegetables, fruits, whole grains, and lean protein helps maintain healthy cholesterol and blood sugar levels."
 
-        elif "diabetes" in question or "sugar" in question:
-            response = "High blood sugar may indicate diabetes. Diet control and exercise help manage it."
+    # vitamin D
+    elif "vitamin d" in question or "sunlight" in question:
+        response = "Vitamin D levels improve with sunlight exposure and foods like fish, eggs, and fortified milk."
 
-        elif "thyroid" in question:
-            response = "High TSH may indicate hypothyroidism causing fatigue and weight gain."
+    # cholesterol
+    elif "cholesterol" in question:
+        response = "High cholesterol can be improved with exercise, fiber-rich foods, and reducing fried or fatty foods."
 
-        elif "uric acid" in question:
-            response = "High uric acid may lead to gout and joint pain."
+    # diabetes / sugar
+    elif "diabetes" in question or "sugar" in question:
+        response = "Maintaining a healthy diet, regular exercise, and weight control helps manage blood sugar levels."
 
-        elif "kidney" in question or "creatinine" in question:
-            response = "High creatinine levels may indicate kidney function issues."
+    # thyroid
+    elif "thyroid" in question:
+        response = "Thyroid imbalance can cause fatigue and weight changes. Regular medical monitoring is recommended."
 
-        st.write(response)
+    # kidney
+    elif "kidney" in question or "creatinine" in question:
+        response = "Kidney health improves with proper hydration, balanced diet, and controlling blood pressure."
+
+    # uric acid
+    elif "uric acid" in question:
+        response = "Reducing red meat, alcohol, and sugary drinks can help control uric acid levels."
+
+    # anemia
+    elif "anemia" in question or "hemoglobin" in question:
+        response = "Iron-rich foods such as spinach, lentils, beans, and red meat can help improve hemoglobin levels."
+
+    # sleep
+    elif "sleep" in question:
+        response = "Adequate sleep (7-8 hours) helps regulate metabolism, hormones, and overall health."
+
+    st.write(response)
 
 
 # ---------------------------------------------------
